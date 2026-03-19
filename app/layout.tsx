@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { siteConfig } from '@/constants/site-config'
 import { fonts } from '@/lib/fonts'
 import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from 'sonner'
 
@@ -68,6 +69,7 @@ export default function RootLayout({
           />
         </ThemeProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )

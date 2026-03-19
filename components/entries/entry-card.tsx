@@ -1,12 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 import { Globe, Lock, Trash2 } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import type { Entry } from '@/types'
 
 const TRUNCATE_LENGTH = 300
+const COLLAPSED_HEIGHT = 120
 
 function formatRelativeTime(dateString: string): string {
   const diff = Date.now() - new Date(dateString).getTime()
@@ -39,10 +41,6 @@ export function EntryCard({
   const [expanded, setExpanded] = useState(false)
 
   const isLong = entry.content.length > TRUNCATE_LENGTH
-  const displayContent =
-    isLong && !expanded
-      ? entry.content.slice(0, TRUNCATE_LENGTH).trimEnd() + '...'
-      : entry.content
 
   return (
     <Card className="hover:bg-accent/30 transition-colors">
@@ -98,15 +96,38 @@ export function EntryCard({
         </div>
       </CardHeader>
       <CardContent>
-        <p className="font-jetbrains text-sm leading-relaxed whitespace-pre-wrap text-foreground/90">
-          {displayContent}
-        </p>
+        <div className="relative">
+          <motion.div
+            initial={false}
+            animate={{ height: expanded || !isLong ? 'auto' : COLLAPSED_HEIGHT }}
+            transition={{ duration: 0.3, ease: [0.04, 0.62, 0.23, 0.98] }}
+            className="overflow-hidden"
+          >
+            <p className="font-jetbrains text-sm leading-relaxed whitespace-pre-wrap text-foreground/90">
+              {entry.content}
+            </p>
+          </motion.div>
+          {isLong && !expanded && (
+            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-card to-transparent pointer-events-none" />
+          )}
+        </div>
         {isLong && (
           <button
             onClick={() => setExpanded(!expanded)}
             className="mt-2 text-xs text-muted-foreground hover:text-foreground font-jetbrains transition-colors"
           >
-            {expanded ? 'Show less' : 'Read more'}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={expanded ? 'less' : 'more'}
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 4 }}
+                transition={{ duration: 0.15 }}
+                className="block"
+              >
+                {expanded ? 'Show less' : 'Read more'}
+              </motion.span>
+            </AnimatePresence>
           </button>
         )}
       </CardContent>
