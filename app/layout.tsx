@@ -52,7 +52,20 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <Toaster position="bottom-right" richColors />
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              style: {
+                '--normal-bg': 'hsl(var(--card))',
+                '--normal-text': 'hsl(var(--foreground))',
+                '--normal-border': 'hsl(var(--border))',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.875rem',
+                boxShadow:
+                  '0 1px 3px hsl(var(--foreground) / 0.06), 0 1px 2px hsl(var(--foreground) / 0.04)',
+              } as React.CSSProperties,
+            }}
+          />
         </ThemeProvider>
         <Analytics />
       </body>

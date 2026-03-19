@@ -28,7 +28,7 @@ export function SignupForm() {
       return
     }
 
-    router.push('/verify-email')
+    router.push('/write')
   }
 
   return (

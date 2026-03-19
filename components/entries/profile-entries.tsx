@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { toast } from 'sonner'
+import { toastSuccess, toastError } from '@/lib/toast'
 import { Globe, Lock } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
@@ -38,13 +38,13 @@ export function ProfileEntries({ entries: initialEntries }: ProfileEntriesProps)
     const { error } = await supabase.from('entries').delete().eq('id', entryToDelete)
 
     if (error) {
-      toast.error('Failed to delete entry.')
+      toastError('Failed to delete entry.')
       setIsDeleting(false)
       return
     }
 
     setEntries((prev) => prev.filter((e) => e.id !== entryToDelete))
-    toast.success('Entry deleted.')
+    toastSuccess('Entry deleted.')
     setIsDeleting(false)
     setEntryToDelete(null)
   }
@@ -60,7 +60,7 @@ export function ProfileEntries({ entries: initialEntries }: ProfileEntriesProps)
       .eq('id', entryToToggle.id)
 
     if (error) {
-      toast.error('Failed to update visibility.')
+      toastError('Failed to update visibility.')
       setIsToggling(false)
       return
     }
@@ -68,7 +68,7 @@ export function ProfileEntries({ entries: initialEntries }: ProfileEntriesProps)
     setEntries((prev) =>
       prev.map((e) => (e.id === entryToToggle.id ? { ...e, is_public: newIsPublic } : e)),
     )
-    toast.success(newIsPublic ? 'Entry is now public.' : 'Entry is now private.')
+    toastSuccess(newIsPublic ? 'Entry is now public.' : 'Entry is now private.')
     setIsToggling(false)
     setEntryToToggle(null)
   }

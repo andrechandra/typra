@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { toast } from 'sonner'
+import { toastSuccess, toastError } from '@/lib/toast'
 import { Volume2, VolumeX } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useAutosave } from '@/hooks/use-autosave'
@@ -65,14 +65,14 @@ export function TypewriterEditor({ userId }: TypewriterEditorProps) {
     setIsSaving(false)
 
     if (error) {
-      toast.error('Failed to save entry. Please try again.')
+      toastError('Failed to save entry. Please try again.')
       return
     }
 
     localStorage.removeItem(getDraftKey(userId))
     setContent('')
     setDialogOpen(false)
-    toast.success(isPublic ? 'Entry published to forum.' : 'Entry saved privately.')
+    toastSuccess(isPublic ? 'Entry published to forum.' : 'Entry saved privately.')
   }
 
   const wordCount = getWordCount(content)

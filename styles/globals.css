@@ -139,6 +139,16 @@
     --radius: 0.5rem;
   }
 
+  /* Toast variant tokens — light mode */
+  :root {
+    --toast-success-bg: hsl(40 18% 90%);
+    --toast-success-border: hsl(35 15% 74%);
+    --toast-error-bg: hsl(12 15% 90%);
+    --toast-error-border: hsl(8 15% 72%);
+    --toast-info-bg: hsl(var(--card));
+    --toast-info-border: hsl(var(--border));
+  }
+
   .dark {
     /* Deep charcoal — dark mode */
     --background: 220 13% 14%;
@@ -171,6 +181,14 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    /* Toast variant tokens — dark mode */
+    --toast-success-bg: hsl(220 12% 21%);
+    --toast-success-border: hsl(35 10% 28%);
+    --toast-error-bg: hsl(220 12% 21%);
+    --toast-error-border: hsl(5 15% 30%);
+    --toast-info-bg: hsl(var(--card));
+    --toast-info-border: hsl(var(--border));
   }
 
   /* Smooth theme transitions — exclude textarea to avoid typing lag */
