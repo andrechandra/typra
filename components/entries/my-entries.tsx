@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { toastSuccess, toastError } from '@/lib/toast'
-import { Globe, Lock } from 'lucide-react'
+import { Eye, EyeOff, Globe, Lock } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Dialog,
@@ -19,17 +19,23 @@ import type { Entry } from '@/types'
 
 type FilterTab = 'all' | 'public' | 'private'
 
-interface ProfileEntriesProps {
+interface MyEntriesProps {
   entries: Entry[]
 }
 
-export function ProfileEntries({ entries: initialEntries }: ProfileEntriesProps) {
+export function MyEntries({ entries: initialEntries }: MyEntriesProps) {
   const [entries, setEntries] = useState<Entry[]>(initialEntries)
   const [tab, setTab] = useState<FilterTab>('all')
   const [entryToDelete, setEntryToDelete] = useState<string | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
   const [entryToToggle, setEntryToToggle] = useState<Entry | null>(null)
   const [isToggling, setIsToggling] = useState(false)
+  const [isToggleAnonymous, setIsToggleAnonymous] = useState(false)
+
+  function openToggleDialog(entry: Entry) {
+    setEntryToToggle(entry)
+    setIsToggleAnonymous(entry.is_anonymous)
+  }
 
   async function confirmDelete() {
     if (!entryToDelete) return
@@ -49,14 +55,13 @@ export function ProfileEntries({ entries: initialEntries }: ProfileEntriesProps)
     setEntryToDelete(null)
   }
 
-  async function confirmToggleVisibility() {
+  async function confirmToggleVisibility(targetIsPublic: boolean) {
     if (!entryToToggle) return
     setIsToggling(true)
     const supabase = createClient()
-    const newIsPublic = !entryToToggle.is_public
     const { error } = await supabase
       .from('entries')
-      .update({ is_public: newIsPublic })
+      .update({ is_public: targetIsPublic, is_anonymous: isToggleAnonymous })
       .eq('id', entryToToggle.id)
 
     if (error) {
@@ -66,9 +71,23 @@ export function ProfileEntries({ entries: initialEntries }: ProfileEntriesProps)
     }
 
     setEntries((prev) =>
-      prev.map((e) => (e.id === entryToToggle.id ? { ...e, is_public: newIsPublic } : e)),
+      prev.map((e) =>
+        e.id === entryToToggle.id
+          ? { ...e, is_public: targetIsPublic, is_anonymous: isToggleAnonymous }
+          : e
+      ),
     )
-    toastSuccess(newIsPublic ? 'Entry is now public.' : 'Entry is now private.')
+
+    const wasPublic = entryToToggle.is_public
+    if (targetIsPublic && wasPublic) {
+      toastSuccess(isToggleAnonymous ? 'Entry is now anonymous.' : 'Entry now shows your username.')
+    } else {
+      toastSuccess(
+        targetIsPublic
+          ? `Entry is now public${isToggleAnonymous ? ' (anonymous)' : ''}.`
+          : 'Entry is now private.'
+      )
+    }
     setIsToggling(false)
     setEntryToToggle(null)
   }
@@ -86,7 +105,7 @@ export function ProfileEntries({ entries: initialEntries }: ProfileEntriesProps)
     <div className="space-y-6">
       <div className="space-y-1">
         <h1 className="text-xl font-jetbrains font-semibold tracking-tight">
-          Your entries
+          My Entries
         </h1>
         <p className="text-sm text-muted-foreground font-jetbrains">
           {entries.length} total &middot; {publicCount} public &middot;{' '}
@@ -113,7 +132,7 @@ export function ProfileEntries({ entries: initialEntries }: ProfileEntriesProps)
                   key={entry.id}
                   entry={entry}
                   showVisibilityBadge
-                  onToggleVisibility={() => setEntryToToggle(entry)}
+                  onToggleVisibility={() => openToggleDialog(entry)}
                   onDelete={() => setEntryToDelete(entry.id)}
                 />
               ))}
@@ -166,16 +185,46 @@ export function ProfileEntries({ entries: initialEntries }: ProfileEntriesProps)
               Who can read this entry?
             </DialogDescription>
           </DialogHeader>
+
+          {/* Anonymous toggle — shown for all public entries and when switching to public */}
+          {entryToToggle && (
+            <div className="flex items-center justify-between rounded-md border border-border px-3 py-2.5">
+              <div className="flex items-center gap-2">
+                {isToggleAnonymous ? (
+                  <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />
+                ) : (
+                  <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+                )}
+                <span className="text-sm font-jetbrains">
+                  {isToggleAnonymous ? 'Post anonymously' : 'Show my username'}
+                </span>
+              </div>
+              <button
+                onClick={() => setIsToggleAnonymous(!isToggleAnonymous)}
+                disabled={isToggling}
+                className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors disabled:opacity-50 ${
+                  isToggleAnonymous ? 'bg-foreground' : 'bg-input'
+                }`}
+                role="switch"
+                aria-checked={isToggleAnonymous}
+                aria-label="Toggle anonymous posting"
+              >
+                <span
+                  className={`pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform ${
+                    isToggleAnonymous ? 'translate-x-4' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
+          )}
+
           <div className="flex flex-col gap-3 pt-2">
             <Button
               variant="outline"
               className="justify-start gap-3 h-14"
-              onClick={() => {
-                if (entryToToggle && !entryToToggle.is_public) confirmToggleVisibility()
-                else setEntryToToggle(null)
-              }}
+              onClick={() => confirmToggleVisibility(true)}
               state={isToggling ? 'loading' : 'default'}
-              disabled={isToggling || (entryToToggle?.is_public ?? false)}
+              disabled={isToggling}
             >
               <Globe className="h-4 w-4 shrink-0" />
               <div className="text-left">
@@ -188,12 +237,9 @@ export function ProfileEntries({ entries: initialEntries }: ProfileEntriesProps)
             <Button
               variant="outline"
               className="justify-start gap-3 h-14"
-              onClick={() => {
-                if (entryToToggle && entryToToggle.is_public) confirmToggleVisibility()
-                else setEntryToToggle(null)
-              }}
+              onClick={() => confirmToggleVisibility(false)}
               state={isToggling ? 'loading' : 'default'}
-              disabled={isToggling || !(entryToToggle?.is_public ?? true)}
+              disabled={isToggling}
             >
               <Lock className="h-4 w-4 shrink-0" />
               <div className="text-left">

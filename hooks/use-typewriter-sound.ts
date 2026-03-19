@@ -10,7 +10,7 @@ import { useRef, useCallback, useState } from 'react'
  * autoplay policy (requires user gesture before audio can play).
  */
 export function useTypewriterSound() {
-  const [soundEnabled, setSoundEnabled] = useState(false)
+  const [soundEnabled, setSoundEnabled] = useState(true)
   const audioCtxRef = useRef<AudioContext | null>(null)
   const lastSoundTimeRef = useRef<number>(0)
 

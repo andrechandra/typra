@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { LogOut, Menu, X } from 'lucide-react'
+import { LogOut, Menu, Settings, X } from 'lucide-react'
 import { signOut } from '@/actions/auth'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -27,7 +27,7 @@ export function NavLinks({ isLoggedIn }: NavLinksProps) {
   const links = [
     { href: '/forum', label: 'Forum', show: true },
     { href: '/write', label: 'Write', show: isLoggedIn },
-    { href: '/profile', label: 'Profile', show: isLoggedIn },
+    { href: '/my-entries', label: 'My Entries', show: isLoggedIn },
   ].filter(({ show, href }) => show && pathname !== href)
 
   return (
@@ -41,16 +41,23 @@ export function NavLinks({ isLoggedIn }: NavLinksProps) {
         ))}
 
         {isLoggedIn ? (
-          <form action={signOut}>
-            <Button
-              type="submit"
-              variant="ghost"
-              size="icon"
-              aria-label="Sign out"
-            >
-              <LogOut className="h-4 w-4" />
+          <>
+            <Button asChild variant="ghost" size="icon" aria-label="Settings">
+              <Link href="/settings">
+                <Settings className="h-4 w-4" />
+              </Link>
             </Button>
-          </form>
+            <form action={signOut}>
+              <Button
+                type="submit"
+                variant="ghost"
+                size="icon"
+                aria-label="Sign out"
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </form>
+          </>
         ) : (
           <>
             <Button asChild variant="ghost" size="small">
@@ -120,6 +127,12 @@ export function NavLinks({ isLoggedIn }: NavLinksProps) {
             <Link href={href}>{label}</Link>
           </Button>
         ))}
+
+        {isLoggedIn && (
+          <Button asChild variant="ghost" className="justify-start w-full">
+            <Link href="/settings">Settings</Link>
+          </Button>
+        )}
 
         {!isLoggedIn && (
           <>

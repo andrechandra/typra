@@ -28,7 +28,7 @@ export function SignupForm() {
       return
     }
 
-    router.push('/write')
+    router.push('/create-username')
   }
 
   return (

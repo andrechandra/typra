@@ -33,7 +33,11 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   const isProtected =
-    pathname.startsWith('/write') || pathname.startsWith('/profile')
+    pathname.startsWith('/write') ||
+    pathname.startsWith('/my-entries') ||
+    pathname.startsWith('/settings') ||
+    pathname.startsWith('/create-username')
+
   const isAuthRoute =
     pathname.startsWith('/login') || pathname.startsWith('/signup')
 
@@ -48,6 +52,9 @@ export async function middleware(request: NextRequest) {
     url.pathname = '/write'
     return NextResponse.redirect(url)
   }
+
+  // Expose pathname to server components via header
+  supabaseResponse.headers.set('x-invoke-pathname', pathname)
 
   return supabaseResponse
 }

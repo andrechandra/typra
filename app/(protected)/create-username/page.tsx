@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { TypewriterEditor } from '@/components/writing/typewriter-editor'
+import { CreateUsernameForm } from '@/components/auth/create-username-form'
 
 export const metadata: Metadata = {
-  title: 'Write',
+  title: 'Choose a Username',
 }
 
-export default async function WritePage() {
+export default async function CreateUsernamePage() {
   const supabase = await createClient()
   const {
     data: { user },
@@ -15,20 +15,14 @@ export default async function WritePage() {
 
   if (!user) redirect('/login')
 
+  // If user already has a profile, skip this step
   const { data: profile } = await supabase
     .from('profiles')
-    .select('default_is_anonymous')
+    .select('id')
     .eq('id', user.id)
     .single()
 
-  if (!profile) redirect('/create-username')
+  if (profile) redirect('/write')
 
-  return (
-    <div className="max-w-3xl mx-auto px-4 md:px-8 py-8">
-      <TypewriterEditor
-        userId={user.id}
-        defaultIsAnonymous={profile.default_is_anonymous}
-      />
-    </div>
-  )
+  return <CreateUsernameForm />
 }

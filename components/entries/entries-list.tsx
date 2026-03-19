@@ -4,17 +4,17 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { EntryCard } from './entry-card'
 import { Button } from '@/components/ui/button'
-import type { Entry } from '@/types'
+import type { EntryWithProfile } from '@/types'
 
 const PAGE_SIZE = 10
 
 interface EntriesListProps {
-  initialEntries: Entry[]
+  initialEntries: EntryWithProfile[]
   initialCursor: string | null
 }
 
 export function EntriesList({ initialEntries, initialCursor }: EntriesListProps) {
-  const [entries, setEntries] = useState<Entry[]>(initialEntries)
+  const [entries, setEntries] = useState<EntryWithProfile[]>(initialEntries)
   const [cursor, setCursor] = useState<string | null>(initialCursor)
   const [isLoading, setIsLoading] = useState(false)
   const hasMore = cursor !== null && entries.length >= PAGE_SIZE
@@ -26,7 +26,7 @@ export function EntriesList({ initialEntries, initialCursor }: EntriesListProps)
     const supabase = createClient()
     const { data } = await supabase
       .from('entries')
-      .select('*')
+      .select('*, profiles!entries_user_id_profiles_fk(username)')
       .eq('is_public', true)
       .lt('created_at', cursor)
       .order('created_at', { ascending: false })
@@ -34,7 +34,10 @@ export function EntriesList({ initialEntries, initialCursor }: EntriesListProps)
 
     setIsLoading(false)
 
-    const rows = (data ?? []) as Entry[]
+    type RawEntry = EntryWithProfile & { profiles: { username: string | null } | null }
+    const rows: EntryWithProfile[] = ((data ?? []) as unknown as RawEntry[]).map(
+      ({ profiles, ...entry }) => ({ ...entry, username: profiles?.username ?? null })
+    )
 
     if (rows.length === 0) {
       setCursor(null)
@@ -56,7 +59,11 @@ export function EntriesList({ initialEntries, initialCursor }: EntriesListProps)
   return (
     <div className="space-y-4">
       {entries.map((entry) => (
-        <EntryCard key={entry.id} entry={entry} />
+        <EntryCard
+          key={entry.id}
+          entry={entry}
+          username={entry.is_anonymous ? null : entry.username}
+        />
       ))}
 
       {hasMore && (

@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { ProfileEntries } from '@/components/entries/profile-entries'
+import { MyEntries } from '@/components/entries/my-entries'
 import type { Entry } from '@/types'
 
 export const metadata: Metadata = {
-  title: 'Profile',
+  title: 'My Entries',
 }
 
-export default async function ProfilePage() {
+export default async function MyEntriesPage() {
   const supabase = await createClient()
   const {
     data: { user },
@@ -24,7 +24,7 @@ export default async function ProfilePage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 md:px-8 py-8">
-      <ProfileEntries entries={(entries ?? []) as Entry[]} />
+      <MyEntries entries={(entries ?? []) as Entry[]} />
     </div>
   )
 }

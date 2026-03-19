@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 
 interface TypewriterEditorProps {
   userId: string
+  defaultIsAnonymous: boolean
 }
 
 function getDraftKey(userId: string) {
@@ -26,7 +27,7 @@ function isSoundKey(key: string) {
   return key.length === 1 || key === 'Backspace' || key === 'Enter'
 }
 
-export function TypewriterEditor({ userId }: TypewriterEditorProps) {
+export function TypewriterEditor({ userId, defaultIsAnonymous }: TypewriterEditorProps) {
   const [content, setContent] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -52,7 +53,7 @@ export function TypewriterEditor({ userId }: TypewriterEditorProps) {
 
   useAutosave(content, saveDraft)
 
-  async function handleSave(isPublic: boolean) {
+  async function handleSave(isPublic: boolean, isAnonymous: boolean) {
     setIsSaving(true)
     const supabase = createClient()
 
@@ -60,6 +61,7 @@ export function TypewriterEditor({ userId }: TypewriterEditorProps) {
       user_id: userId,
       content,
       is_public: isPublic,
+      is_anonymous: isAnonymous,
     })
 
     setIsSaving(false)
@@ -72,7 +74,11 @@ export function TypewriterEditor({ userId }: TypewriterEditorProps) {
     localStorage.removeItem(getDraftKey(userId))
     setContent('')
     setDialogOpen(false)
-    toastSuccess(isPublic ? 'Entry published to forum.' : 'Entry saved privately.')
+    toastSuccess(
+      isPublic
+        ? `Entry published${isAnonymous ? ' anonymously' : ''} to forum.`
+        : 'Entry saved privately.'
+    )
   }
 
   const wordCount = getWordCount(content)
@@ -135,6 +141,7 @@ export function TypewriterEditor({ userId }: TypewriterEditorProps) {
         onOpenChange={setDialogOpen}
         onSave={handleSave}
         isSaving={isSaving}
+        defaultIsAnonymous={defaultIsAnonymous}
       />
     </div>
   )

@@ -1,11 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import { Globe, Lock, Trash2 } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import type { Entry } from '@/types'
 
-const TRUNCATE_LENGTH = 150
+const TRUNCATE_LENGTH = 300
 
 function formatRelativeTime(dateString: string): string {
   const diff = Date.now() - new Date(dateString).getTime()
@@ -22,6 +23,7 @@ function formatRelativeTime(dateString: string): string {
 
 interface EntryCardProps {
   entry: Entry
+  username?: string | null
   showVisibilityBadge?: boolean
   onDelete?: () => void
   onToggleVisibility?: () => void
@@ -29,29 +31,45 @@ interface EntryCardProps {
 
 export function EntryCard({
   entry,
+  username,
   showVisibilityBadge = false,
   onDelete,
   onToggleVisibility,
 }: EntryCardProps) {
+  const [expanded, setExpanded] = useState(false)
+
   const isLong = entry.content.length > TRUNCATE_LENGTH
-  const preview = isLong
-    ? entry.content.slice(0, TRUNCATE_LENGTH).trimEnd() + '...'
-    : entry.content
+  const displayContent =
+    isLong && !expanded
+      ? entry.content.slice(0, TRUNCATE_LENGTH).trimEnd() + '...'
+      : entry.content
 
   return (
     <Card className="hover:bg-accent/30 transition-colors">
       <CardHeader className="pb-2 flex flex-row items-center justify-between gap-4">
-        <p className="text-xs text-muted-foreground font-jetbrains">
-          {formatRelativeTime(entry.created_at)}
-        </p>
+        <div className="flex flex-col gap-0.5">
+          <p className="text-xs text-muted-foreground font-jetbrains">
+            {formatRelativeTime(entry.created_at)}
+          </p>
+          {username && (
+            <p className="text-xs font-jetbrains text-foreground/70">{username}</p>
+          )}
+        </div>
         <div className="flex items-center gap-2">
           {showVisibilityBadge && (
-            <Badge
-              variant={entry.is_public ? 'default' : 'secondary'}
-              className="text-xs font-jetbrains"
-            >
-              {entry.is_public ? 'Public' : 'Private'}
-            </Badge>
+            <>
+              <Badge
+                variant={entry.is_public ? 'default' : 'secondary'}
+                className="text-xs font-jetbrains"
+              >
+                {entry.is_public ? 'Public' : 'Private'}
+              </Badge>
+              {entry.is_public && (
+                <Badge variant="outline" className="text-xs font-jetbrains">
+                  {entry.is_anonymous ? 'Anonymous' : 'Named'}
+                </Badge>
+              )}
+            </>
           )}
           {onToggleVisibility && (
             <button
@@ -81,8 +99,16 @@ export function EntryCard({
       </CardHeader>
       <CardContent>
         <p className="font-jetbrains text-sm leading-relaxed whitespace-pre-wrap text-foreground/90">
-          {preview}
+          {displayContent}
         </p>
+        {isLong && (
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="mt-2 text-xs text-muted-foreground hover:text-foreground font-jetbrains transition-colors"
+          >
+            {expanded ? 'Show less' : 'Read more'}
+          </button>
+        )}
       </CardContent>
     </Card>
   )

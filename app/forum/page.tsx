@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { EntriesList } from '@/components/entries/entries-list'
 import { SiteNav } from '@/components/nav/site-nav'
-import type { Entry } from '@/types'
+import type { EntryWithProfile } from '@/types'
 
 export const metadata: Metadata = {
   title: 'Forum',
@@ -15,12 +15,16 @@ export default async function ForumPage() {
 
   const { data: entries } = await supabase
     .from('entries')
-    .select('*')
+    .select('*, profiles!entries_user_id_profiles_fk(username)')
     .eq('is_public', true)
     .order('created_at', { ascending: false })
     .limit(PAGE_SIZE)
 
-  const initialEntries: Entry[] = (entries ?? []) as Entry[]
+  type RawEntry = EntryWithProfile & { profiles: { username: string | null } | null }
+  const initialEntries: EntryWithProfile[] = ((entries ?? []) as unknown as RawEntry[]).map(
+    ({ profiles, ...entry }) => ({ ...entry, username: profiles?.username ?? null })
+  )
+
   const cursor =
     initialEntries.length === PAGE_SIZE
       ? initialEntries[initialEntries.length - 1].created_at
@@ -36,7 +40,7 @@ export default async function ForumPage() {
               Community entries
             </h1>
             <p className="text-sm text-muted-foreground font-jetbrains">
-              Anonymous thoughts from the Typra community
+              Thoughts from the Typra community
             </p>
           </div>
           <EntriesList initialEntries={initialEntries} initialCursor={cursor} />
