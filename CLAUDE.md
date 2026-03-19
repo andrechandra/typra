@@ -21,8 +21,12 @@ pnpm test         # Run Jest tests
 
 - `app/` — Next.js App Router pages and layouts
 - `components/ui/` — shadcn/ui components (Radix UI primitives + Tailwind)
-- `components/` — App-level components (ThemeProvider, ThemeToggle, Footer)
-- `lib/` — Utilities (`cn()` from clsx + tailwind-merge, fonts)
+- `components/entries/` — Entry display components (`EntryCard`, `ProfileEntries`, `EntriesList`)
+- `components/writing/` — Editor and dialog components (`TypewriterEditor`, `SaveDialog`)
+- `components/` — App-level components (ThemeProvider, ThemeToggle, Footer, nav)
+- `actions/` — Next.js Server Actions (`'use server'` directive; e.g. `auth.ts`)
+- `hooks/` — Custom hooks (`use-autosave.ts`, `use-typewriter-sound.ts`)
+- `lib/` — Utilities (`cn()` from clsx + tailwind-merge, fonts, Supabase clients)
 - `constants/` — Site-wide config/metadata
 - `styles/globals.css` — Tailwind imports + CSS variable theme tokens
 
@@ -35,6 +39,12 @@ pnpm test         # Run Jest tests
 **shadcn/ui components:** Components live in `components/ui/`. Add new ones via `pnpm dlx shadcn@latest add <component>`. They use `class-variance-authority` (CVA) for variant definitions and the `asChild` pattern (Radix Slot) for polymorphic rendering.
 
 **Button component** (`components/ui/button.tsx`) is notably extended beyond standard shadcn — it supports `leftIcon`/`rightIcon` props with animation variants (`slide`, `bounce`, `fade`, `scale`), a `loading` state, and external link handling.
+
+**Dialog pattern:** Controlled via `open`/`onOpenChange` props. Use Radix UI primitives from `components/ui/dialog.tsx`. See `components/writing/save-dialog.tsx` as a reference implementation.
+
+**Supabase:** Use `createClient()` from `@/lib/supabase/client` in Client Components; `@/lib/supabase/server` in Server Components and Server Actions.
+
+**Server Actions:** Live in `actions/` with `'use server'` at the top. Currently only `auth.ts` (sign-out).
 
 **Imports:** Use `@/` for all internal imports (maps to project root).
 

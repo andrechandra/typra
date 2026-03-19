@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { EntriesList } from '@/components/entries/entries-list'
-import { ForumNav } from '@/components/nav/forum-nav'
+import { SiteNav } from '@/components/nav/site-nav'
 import type { Entry } from '@/types'
 
 export const metadata: Metadata = {
@@ -28,7 +28,7 @@ export default async function ForumPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <ForumNav />
+      <SiteNav />
       <main className="flex-1">
         <div className="max-w-3xl mx-auto px-4 md:px-8 py-8">
           <div className="space-y-1 mb-8">

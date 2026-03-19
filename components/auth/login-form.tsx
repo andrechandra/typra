@@ -37,6 +37,10 @@ export function LoginForm() {
 
   return (
     <div className="w-full max-w-sm space-y-6">
+      <Button asChild variant="ghost" size="small" className="fixed top-4 left-4">
+        <Link href="/">← Home</Link>
+      </Button>
+
       <div className="space-y-1 text-center">
         <h1 className="text-2xl font-jetbrains font-semibold tracking-tight">
           Welcome back

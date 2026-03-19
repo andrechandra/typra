@@ -1,6 +1,6 @@
 'use client'
 
-import { Trash2 } from 'lucide-react'
+import { Globe, Lock, Trash2 } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import type { Entry } from '@/types'
@@ -24,12 +24,14 @@ interface EntryCardProps {
   entry: Entry
   showVisibilityBadge?: boolean
   onDelete?: () => void
+  onToggleVisibility?: () => void
 }
 
 export function EntryCard({
   entry,
   showVisibilityBadge = false,
   onDelete,
+  onToggleVisibility,
 }: EntryCardProps) {
   const isLong = entry.content.length > TRUNCATE_LENGTH
   const preview = isLong
@@ -50,6 +52,20 @@ export function EntryCard({
             >
               {entry.is_public ? 'Public' : 'Private'}
             </Badge>
+          )}
+          {onToggleVisibility && (
+            <button
+              onClick={onToggleVisibility}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Toggle visibility"
+              title={entry.is_public ? 'Make private' : 'Make public'}
+            >
+              {entry.is_public ? (
+                <Globe className="h-3.5 w-3.5" />
+              ) : (
+                <Lock className="h-3.5 w-3.5" />
+              )}
+            </button>
           )}
           {onDelete && (
             <button

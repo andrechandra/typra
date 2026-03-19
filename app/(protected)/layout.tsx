@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { AppNav } from '@/components/nav/app-nav'
+import { SiteNav } from '@/components/nav/site-nav'
 
 export default async function ProtectedLayout({
   children,
@@ -16,7 +16,7 @@ export default async function ProtectedLayout({
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <AppNav />
+      <SiteNav />
       <main className="flex-1">{children}</main>
     </div>
   )

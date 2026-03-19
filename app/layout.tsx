@@ -16,9 +16,9 @@ export const generateMetadata = (): Metadata => ({
   keywords: siteConfig.keywords,
   robots: { index: true, follow: true },
   icons: {
-    icon: '/logo/tab-icon.svg',
-    shortcut: '/logo/tab-icon.svg',
-    apple: '/logo/tab-icon.svg',
+    icon: '/logo/tab-icon.png',
+    shortcut: '/logo/tab-icon.png',
+    apple: '/logo/tab-icon.png',
   },
   openGraph: {
     url: siteConfig.url,
