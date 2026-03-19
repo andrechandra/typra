@@ -5,7 +5,7 @@ import { toastSuccess, toastError } from '@/lib/toast'
 import { Volume2, VolumeX } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useAutosave } from '@/hooks/use-autosave'
-import { useTypewriterSound } from '@/hooks/use-typewriter-sound'
+import { useTypewriterSound, type SoundType } from '@/hooks/use-typewriter-sound'
 import { SaveDialog } from './save-dialog'
 import { Button } from '@/components/ui/button'
 
@@ -22,9 +22,12 @@ function getWordCount(text: string) {
   return text.trim() ? text.trim().split(/\s+/).length : 0
 }
 
-// Keys that trigger a keystroke sound
-function isSoundKey(key: string) {
-  return key.length === 1 || key === 'Backspace' || key === 'Enter'
+function getSoundType(key: string): SoundType | null {
+  if (key === 'Enter') return 'enter'
+  if (key === 'Backspace') return 'backspace'
+  if (key === ' ') return 'space'
+  if (key.length === 1) return 'key'
+  return null
 }
 
 export function TypewriterEditor({ userId, defaultIsAnonymous }: TypewriterEditorProps) {
@@ -91,7 +94,8 @@ export function TypewriterEditor({ userId, defaultIsAnonymous }: TypewriterEdito
           value={content}
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={(e) => {
-            if (isSoundKey(e.key)) playKeystroke()
+            const soundType = getSoundType(e.key)
+            if (soundType) playKeystroke(soundType)
           }}
           placeholder={draftRestored ? 'Begin your entry...' : ''}
           className="

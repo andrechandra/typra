@@ -1,62 +1,109 @@
 'use client'
 
-import { useRef, useCallback, useState } from 'react'
+import { useRef, useCallback, useState, useEffect } from 'react'
 
-/**
- * Synthesizes a soft typewriter keystroke click using the Web Audio API.
- * No audio files — sound is generated programmatically.
- *
- * AudioContext is lazily initialized on first keypress to satisfy browser
- * autoplay policy (requires user gesture before audio can play).
- */
+export type SoundType = 'key' | 'space' | 'enter' | 'backspace'
+
+const THROTTLE_MS: Record<SoundType, number> = {
+  key: 30,
+  space: 30,
+  backspace: 30,
+  enter: 0,
+}
+
+interface LoadedBuffers {
+  key: AudioBuffer
+  enter: AudioBuffer
+}
+
+async function loadBuffers(ctx: AudioContext): Promise<LoadedBuffers | null> {
+  try {
+    const [keyBuf, enterBuf] = await Promise.all([
+      fetch('/sounds/keypress.mp3').then((r) => r.arrayBuffer()).then((b) => ctx.decodeAudioData(b)),
+      fetch('/sounds/return.mp3').then((r) => r.arrayBuffer()).then((b) => ctx.decodeAudioData(b)),
+    ])
+    return { key: keyBuf, enter: enterBuf }
+  } catch {
+    return null
+  }
+}
+
+function playBuffer(
+  ctx: AudioContext,
+  buffer: AudioBuffer,
+  playbackRate: number,
+  gain: number,
+): void {
+  const source = ctx.createBufferSource()
+  source.buffer = buffer
+  source.playbackRate.value = playbackRate
+
+  const gainNode = ctx.createGain()
+  gainNode.gain.value = gain
+
+  source.connect(gainNode)
+  gainNode.connect(ctx.destination)
+  source.start()
+}
+
 export function useTypewriterSound() {
   const [soundEnabled, setSoundEnabled] = useState(true)
   const audioCtxRef = useRef<AudioContext | null>(null)
-  const lastSoundTimeRef = useRef<number>(0)
+  const loadedBuffersRef = useRef<LoadedBuffers | null>(null)
+  const lastSoundTimeRef = useRef<Record<SoundType, number>>({
+    key: 0,
+    space: 0,
+    enter: 0,
+    backspace: 0,
+  })
 
-  const playKeystroke = useCallback(() => {
-    if (!soundEnabled) return
-
-    // Throttle: skip if last sound was less than 30ms ago (held keys)
-    const now = Date.now()
-    if (now - lastSoundTimeRef.current < 30) return
-    lastSoundTimeRef.current = now
-
-    // Lazy-init AudioContext on first user interaction
-    if (!audioCtxRef.current) {
-      audioCtxRef.current = new AudioContext()
+  useEffect(() => {
+    const ctx = new AudioContext()
+    audioCtxRef.current = ctx
+    void loadBuffers(ctx).then((b) => {
+      loadedBuffersRef.current = b
+    })
+    return () => {
+      void ctx.close()
     }
-    const ctx = audioCtxRef.current
+  }, [])
 
-    // Short white-noise burst with exponential decay envelope (~50ms)
-    const bufferSize = Math.floor(ctx.sampleRate * 0.05)
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate)
-    const data = buffer.getChannelData(0)
-    for (let i = 0; i < bufferSize; i++) {
-      // Exponential decay shapes the click character
-      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 3)
-    }
+  const playKeystroke = useCallback(
+    (type: SoundType = 'key') => {
+      if (!soundEnabled) return
 
-    const source = ctx.createBufferSource()
-    source.buffer = buffer
+      const throttle = THROTTLE_MS[type]
+      if (throttle > 0) {
+        const now = Date.now()
+        if (now - lastSoundTimeRef.current[type] < throttle) return
+        lastSoundTimeRef.current[type] = now
+      }
 
-    // Bandpass filter for "click" character — slight pitch randomness
-    const filter = ctx.createBiquadFilter()
-    filter.type = 'bandpass'
-    filter.frequency.value = 1500 + Math.random() * 1000 // 1500–2500 Hz
-    filter.Q.value = 0.5
+      const ctx = audioCtxRef.current
+      if (!ctx || !loadedBuffersRef.current) return
 
-    // Slight volume randomness for realism
-    const gain = ctx.createGain()
-    gain.gain.value = 0.04 + Math.random() * 0.03 // 0.04–0.07
+      if (ctx.state === 'suspended') void ctx.resume()
 
-    source.connect(filter)
-    filter.connect(gain)
-    gain.connect(ctx.destination)
+      const loaded = loadedBuffersRef.current
+      const vol = 0.85 + Math.random() * 0.3
 
-    source.start()
-    source.stop(ctx.currentTime + 0.05)
-  }, [soundEnabled])
+      switch (type) {
+        case 'key':
+          playBuffer(ctx, loaded.key, 0.95 + Math.random() * 0.1, 1.0 * vol)
+          break
+        case 'space':
+          playBuffer(ctx, loaded.key, 0.75 + Math.random() * 0.1, 0.65 * vol)
+          break
+        case 'backspace':
+          playBuffer(ctx, loaded.key, 0.95 + Math.random() * 0.1, 1.0 * vol)
+          break
+        case 'enter':
+          playBuffer(ctx, loaded.enter, 0.97 + Math.random() * 0.06, 0.9 * vol)
+          break
+      }
+    },
+    [soundEnabled],
+  )
 
   return { soundEnabled, setSoundEnabled, playKeystroke }
 }
