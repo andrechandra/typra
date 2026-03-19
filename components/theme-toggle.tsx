@@ -19,7 +19,7 @@ export function ThemeToggle() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="outline"
+          variant="ghost"
           size="icon"
           onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
         >

@@ -1,62 +1,53 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
-import { Footer } from '@/components/footer'
 import { ThemeToggle } from '@/components/theme-toggle'
-import Image from 'next/image'
+import { Footer } from '@/components/footer'
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (user) redirect('/write')
+
   return (
     <main className="min-h-screen bg-background flex flex-col">
       <div className="container mx-auto px-8 md:px-16 py-16 flex-1 flex flex-col">
-        <nav className="flex justify-end items-center">
-          <ThemeToggle />
-        </nav>
-        <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4">
-          <h1 className="font-poppins font-extrabold leading-tight tracking-tighter space-y-2 text-xl sm:text-2xl md:text-3xl lg:text-4xl">
-            Next.js + Tailwind CSS + shadcn/ui Starter
-          </h1>
-          <p className="text-xs sm:text-xs md:text-sm lg:text-base text-muted-foreground max-w-2xl">
-            A starter template for building modern web applications with
-            Next.js, Tailwind CSS, and shadcn/ui components. Pre-configured with
-            TypeScript, Husky, and ESLint.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button asChild>
-              <Link href="/components">See all components</Link>
+        <nav className="flex justify-between items-center">
+          <span className="font-jetbrains text-sm font-semibold tracking-widest uppercase">
+            Typra
+          </span>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Button asChild variant="ghost" size="small">
+              <Link href="/forum">Forum</Link>
             </Button>
-            <Button variant="outline" asChild isExternal>
-              <a
-                href="https://github.com/andrechandra/next-tailwind-starter"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                See the repository
-              </a>
+            <Button asChild size="small">
+              <Link href="/login">Sign in</Link>
             </Button>
           </div>
-          <div>
-            <Button
-              asChild
-              variant="outline"
-              className="flex items-center gap-2"
-              leftIcon={
-                <Image
-                  src="/vercel.svg"
-                  alt="Vercel Logo"
-                  width={20}
-                  height={20}
-                  className="w-4 h-4 invert dark:invert-0"
-                />
-              }
-              isExternal
-            >
-              <Link
-                href="https://vercel.com/new/clone?repository-url=https://github.com/andrechandra/next-tailwind-starter"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Deploy to Vercel
-              </Link>
+        </nav>
+
+        <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6">
+          <div className="space-y-3">
+            <h1 className="font-jetbrains font-semibold text-3xl sm:text-4xl md:text-5xl tracking-tight">
+              Write without noise.
+            </h1>
+            <p className="text-muted-foreground max-w-sm mx-auto text-sm md:text-base leading-relaxed font-jetbrains">
+              A minimal journaling space. Type freely, save privately, share
+              when it feels right.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button asChild size="large">
+              <Link href="/signup">Start writing</Link>
+            </Button>
+            <Button asChild variant="outline" size="large">
+              <Link href="/forum">Read the forum</Link>
             </Button>
           </div>
         </div>

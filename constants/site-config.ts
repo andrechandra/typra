@@ -1,14 +1,7 @@
 export const siteConfig = {
-  title: 'Next.js + Tailwind CSS Starter Template',
+  title: 'Typra',
   description:
-    'A starter template with Next.js, Tailwind CSS, TypeScript, and shadcn/ui',
-  keywords: [
-    'nextjs',
-    'tailwindcss',
-    'typescript',
-    'shadcn',
-    'starter',
-    'template',
-  ],
-  url: 'https://next-shadcn-starter-template.vercel.app/',
+    'A minimalist typewriter-inspired journaling app. Write freely. Share optionally.',
+  keywords: ['journaling', 'writing', 'typewriter', 'minimal', 'typra'],
+  url: 'https://typra.vercel.app/',
 }
