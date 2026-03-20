@@ -94,6 +94,11 @@ export function TypewriterEditor({ userId, defaultIsAnonymous }: TypewriterEdito
           value={content}
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={(e) => {
+            if (e.key === 'Enter' && e.shiftKey) {
+              e.preventDefault()
+              if (content.trim()) setDialogOpen(true)
+              return
+            }
             const soundType = getSoundType(e.key)
             if (soundType) playKeystroke(soundType)
           }}

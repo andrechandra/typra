@@ -4,8 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Footer } from '@/components/footer'
 import { SiteNav } from '@/components/nav/site-nav'
-
-const SAMPLE_TEXT = `It was a quiet Tuesday evening. I sat by the window,\nwatching the rain trace lines down the glass.\n\nThere is something about rain that makes the words\ncome easier. Like the world is finally still enough\nto hear itself think.`
+import { TypewriterPreview } from '@/components/typewriter-preview'
 
 const features = [
   {
@@ -91,19 +90,7 @@ export default async function Home() {
         </section>
 
         {/* Mock Editor Preview Section */}
-        <section className="px-4 py-16 md:py-20 animate-in fade-in duration-700 delay-300">
-          <div className="max-w-xl mx-auto space-y-5">
-            <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground font-jetbrains text-center">
-              What it feels like
-            </p>
-            <div className="bg-card paper-texture rounded-lg shadow-md border border-border/50 px-8 md:px-12 py-10">
-              <p className="font-jetbrains text-sm leading-8 tracking-wide text-foreground/50 whitespace-pre-line">
-                {SAMPLE_TEXT}
-                <span className="cursor-blink text-foreground/70">█</span>
-              </p>
-            </div>
-          </div>
-        </section>
+        <TypewriterPreview />
       </main>
 
       <Footer />
