@@ -47,10 +47,10 @@ export function TypewriterPreview() {
         <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground font-jetbrains text-center">
           What it feels like
         </p>
-        <div className="relative bg-card paper-texture rounded-lg shadow-md border border-border/50 px-8 md:px-12 py-10">
+        <div className="relative bg-card paper-texture rounded-xs shadow-md border border-border/50 px-8 md:px-12 py-10">
           <button
             onClick={() => setSoundEnabled((v) => !v)}
-            className="absolute top-3 right-3 p-1.5 rounded text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+            className="absolute top-3 right-3 p-1.5 rounded-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
             aria-label={soundEnabled ? 'Mute typewriter sounds' : 'Unmute typewriter sounds'}
           >
             {soundEnabled ? (

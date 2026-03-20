@@ -9,14 +9,14 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'rounded-md bg-primary text-primary-foreground hover:bg-primary/90',
+          'rounded-xs bg-primary text-primary-foreground hover:bg-primary/90',
         destructive:
-          'rounded-md bg-destructive text-destructive-foreground hover:bg-destructive/90',
+          'rounded-xs bg-destructive text-destructive-foreground hover:bg-destructive/90',
         outline:
-          'rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+          'rounded-xs border border-input bg-background hover:bg-accent hover:text-accent-foreground',
         secondary:
-          'rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'rounded-md hover:bg-accent hover:text-accent-foreground',
+          'rounded-xs bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        ghost: 'rounded-xs hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-6 hover:underline',
         link_left:
           'text-primary relative w-fit before:absolute before:w-full before:bottom-0 before:left-0 before:border-b before:border-dotted before:border-black dark:before:border-white hover:before:opacity-0 before:transition-opacity before:duration-200 after:absolute after:w-full after:scale-x-0 after:h-[0.025rem] after:bottom-0 after:left-0 after:origin-left after:bg-black dark:after:bg-white after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-right',
@@ -25,8 +25,8 @@ const buttonVariants = cva(
       },
       size: {
         default: 'h-10 px-4 py-2',
-        small: 'h-8 rounded-md px-3',
-        large: 'h-12 rounded-md px-8',
+        small: 'h-8 rounded-xs px-3',
+        large: 'h-12 rounded-xs px-8',
         icon: 'h-8 w-8',
       },
       state: {

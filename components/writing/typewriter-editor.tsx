@@ -94,7 +94,7 @@ export function TypewriterEditor({ userId, defaultIsAnonymous }: TypewriterEdito
   return (
     <div className="flex flex-col gap-4">
       {/* Paper-like writing container */}
-      <div className="bg-card rounded-lg shadow-md border border-border/50 px-8 md:px-12 py-10 paper-texture">
+      <div className="bg-card rounded-xs shadow-md border border-border/50 px-8 md:px-12 py-10 paper-texture">
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -130,7 +130,7 @@ export function TypewriterEditor({ userId, defaultIsAnonymous }: TypewriterEdito
           </p>
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
-            className="h-8 w-8 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+            className="h-8 w-8 flex items-center justify-center rounded-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
             aria-label={soundEnabled ? 'Disable typewriter sound' : 'Enable typewriter sound'}
             title={soundEnabled ? 'Sound on' : 'Sound off'}
           >

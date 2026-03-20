@@ -219,7 +219,7 @@ export function SettingsForm({
       {/* Default anonymous */}
       <section className="space-y-3">
         <h2 className="text-sm font-jetbrains font-semibold">Default posting preference</h2>
-        <div className="flex items-center justify-between max-w-xs rounded-lg border border-border px-4 py-3">
+        <div className="flex items-center justify-between max-w-xs rounded-xs border border-border px-4 py-3">
           <div className="space-y-0.5">
             <p className="text-sm font-jetbrains font-medium">Post anonymously by default</p>
             <p className="text-xs text-muted-foreground font-jetbrains">
@@ -229,7 +229,7 @@ export function SettingsForm({
           <button
             onClick={handleAnonymousToggle}
             disabled={anonymousLoading}
-            className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${
+            className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-xs border-2 border-transparent transition-colors focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${
               isAnonymous ? 'bg-foreground' : 'bg-input'
             }`}
             role="switch"
@@ -237,7 +237,7 @@ export function SettingsForm({
             aria-label="Toggle default anonymous posting"
           >
             <span
-              className={`pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform ${
+              className={`pointer-events-none block h-4 w-4 rounded-xs bg-background shadow-lg ring-0 transition-transform ${
                 isAnonymous ? 'translate-x-4' : 'translate-x-0'
               }`}
             />

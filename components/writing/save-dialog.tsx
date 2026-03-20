@@ -44,7 +44,7 @@ export function SaveDialog({
         </DialogHeader>
 
         {/* Anonymous toggle */}
-        <div className="flex items-center justify-between rounded-md border border-border px-3 py-2.5">
+        <div className="flex items-center justify-between rounded-xs border border-border px-3 py-2.5">
           <div className="flex items-center gap-2">
             {isAnonymous ? (
               <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />
@@ -58,7 +58,7 @@ export function SaveDialog({
           <button
             onClick={() => setIsAnonymous(!isAnonymous)}
             disabled={isSaving}
-            className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${
+            className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-xs border-2 border-transparent transition-colors focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${
               isAnonymous ? 'bg-foreground' : 'bg-input'
             }`}
             role="switch"
@@ -66,7 +66,7 @@ export function SaveDialog({
             aria-label="Toggle anonymous posting"
           >
             <span
-              className={`pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform ${
+              className={`pointer-events-none block h-4 w-4 rounded-xs bg-background shadow-lg ring-0 transition-transform ${
                 isAnonymous ? 'translate-x-4' : 'translate-x-0'
               }`}
             />
