@@ -1,13 +1,18 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import { toastSuccess, toastError } from '@/lib/toast'
 import { Volume2, VolumeX } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useAutosave } from '@/hooks/use-autosave'
 import { useTypewriterSound, type SoundType } from '@/hooks/use-typewriter-sound'
-import { SaveDialog } from './save-dialog'
 import { Button } from '@/components/ui/button'
+
+const SaveDialog = dynamic(
+  () => import('./save-dialog').then((mod) => mod.SaveDialog),
+  { ssr: false }
+)
 
 interface TypewriterEditorProps {
   userId: string
@@ -36,6 +41,7 @@ export function TypewriterEditor({ userId, defaultIsAnonymous }: TypewriterEdito
   const [isSaving, setIsSaving] = useState(false)
   const [draftRestored, setDraftRestored] = useState(false)
   const { soundEnabled, setSoundEnabled, playKeystroke } = useTypewriterSound()
+  const supabase = useMemo(() => createClient(), [])
 
   // Restore draft from localStorage on mount
   useEffect(() => {
@@ -58,7 +64,6 @@ export function TypewriterEditor({ userId, defaultIsAnonymous }: TypewriterEdito
 
   async function handleSave(isPublic: boolean, isAnonymous: boolean) {
     setIsSaving(true)
-    const supabase = createClient()
 
     const { error } = await supabase.from('entries').insert({
       user_id: userId,

@@ -38,8 +38,6 @@
 
   --font-inter: var(--font-sans);
   --font-jetbrains: var(--font-mono);
-  --font-poppins: var(--font-poppins);
-  --font-merriweather: var(--font-merriweather);
 
   --cursor-external-pointer: var(--external-cursor);
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { TypewriterEditor } from '@/components/writing/typewriter-editor'
+import { TypewriterEditor } from '@/components/writing/typewriter-editor-client'
 
 export const metadata: Metadata = {
   title: 'Write',
