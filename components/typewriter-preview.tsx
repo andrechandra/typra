@@ -45,7 +45,7 @@ export function TypewriterPreview() {
     <section className="px-4 py-16 md:py-20 animate-in fade-in duration-700 delay-300">
       <div className="max-w-xl mx-auto space-y-5">
         <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground font-jetbrains text-center">
-          What it feels like
+          The writing experience
         </p>
         <div className="relative bg-card paper-texture rounded-xs shadow-md border border-border/50 px-8 md:px-12 py-10">
           <button

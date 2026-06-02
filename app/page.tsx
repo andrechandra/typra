@@ -1,29 +1,16 @@
 import Link from 'next/link'
-import { PenLine, Moon, Lock } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Footer } from '@/components/footer'
 import { SiteNav } from '@/components/nav/site-nav'
 import { TypewriterPreview } from '@/components/typewriter-preview'
-
-const features = [
-  {
-    icon: PenLine,
-    label: 'Typewriter experience',
-    description: 'Monospace font, paper texture, and soft keystroke sounds.',
-  },
-  {
-    icon: Moon,
-    label: 'Calm by design',
-    description: 'Paper-warm light mode and deep charcoal dark mode.',
-  },
-  {
-    icon: Lock,
-    label: 'Private by default',
-    description: 'Your words stay yours. Share only what you choose.',
-  },
-]
+import { FeatureStrip } from '@/components/landing/feature-strip'
+import { HowItWorks } from '@/components/landing/how-it-works'
+import { HabitsPreview } from '@/components/landing/habits-preview'
+import { TasksPreview } from '@/components/landing/tasks-preview'
+import { StreakTeaser } from '@/components/landing/streak-teaser'
+import { CtaBanner } from '@/components/landing/cta-banner'
 
 export default async function Home() {
   const supabase = await createClient()
@@ -32,8 +19,6 @@ export default async function Home() {
   } = await supabase.auth.getUser()
 
   if (user) redirect('/dashboard')
-
-  const isLoggedIn = false
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -45,55 +30,37 @@ export default async function Home() {
           <div className="text-center space-y-8 max-w-xl animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="space-y-5">
               <p className="text-xs tracking-[0.4em] uppercase text-muted-foreground font-jetbrains">
-                Typra
+                Journal · Habits · Tasks
               </p>
               <h1 className="font-jetbrains font-semibold text-4xl sm:text-5xl md:text-6xl tracking-tight leading-tight">
-                End your day
+                Write. Track.
                 <br />
-                in words.
+                Finish.
               </h1>
               <p className="text-muted-foreground max-w-xs mx-auto text-sm leading-relaxed font-jetbrains">
-                A minimalist, typewriter-inspired journaling app designed to
-                help you reflect, unwind, and capture your thoughts.
+                A focused workspace for your writing, habits, and tasks, built
+                for the way you actually think.
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              {isLoggedIn ? (
-                <Button asChild size="large">
-                  <Link href="/write">Continue Writing</Link>
-                </Button>
-              ) : (
-                <>
-                  <Button asChild size="large">
-                    <Link href="/signup">Start Writing</Link>
-                  </Button>
-                  <Button asChild size="large" variant="outline">
-                    <Link href="/forum">Browse Forum</Link>
-                  </Button>
-                </>
-              )}
+              <Button asChild size="large">
+                <Link href="/signup">Get Started</Link>
+              </Button>
+              <Button asChild size="large" variant="outline">
+                <Link href="/forum">Browse Forum</Link>
+              </Button>
             </div>
           </div>
         </section>
 
-        {/* Features Section */}
-        <section className="border-t border-border/40 px-4 py-16 md:py-20 animate-in fade-in duration-700 delay-200">
-          <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
-            {features.map(({ icon: Icon, label, description }) => (
-              <div key={label} className="space-y-2">
-                <Icon className="h-4 w-4 text-muted-foreground" />
-                <p className="font-jetbrains text-sm font-medium">{label}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed font-jetbrains">
-                  {description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Mock Editor Preview Section */}
+        <FeatureStrip />
+        <HowItWorks />
         <TypewriterPreview />
+        <HabitsPreview />
+        <TasksPreview />
+        <StreakTeaser />
+        <CtaBanner />
       </main>
 
       <Footer />
