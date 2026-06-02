@@ -59,6 +59,18 @@
 }
 
 @layer utilities {
+  /* iOS: prevent double-tap zoom on buttons and interactive elements */
+  button,
+  a,
+  [role='button'] {
+    touch-action: manipulation;
+  }
+
+  /* iOS: prevent font scaling in landscape */
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
   /* Custom cursor for light/dark modes */
   :root {
     --external-cursor: url('/cursor/external.svg') 4 4, auto;

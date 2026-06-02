@@ -7,7 +7,11 @@ export const metadata: Metadata = {
   title: 'Write',
 }
 
-export default async function WritePage() {
+interface Props {
+  searchParams: Promise<{ habit?: string }>
+}
+
+export default async function WritePage({ searchParams }: Props) {
   const supabase = await createClient()
   const {
     data: { user },
@@ -23,11 +27,27 @@ export default async function WritePage() {
 
   if (!profile) redirect('/create-username')
 
+  const { habit: habitId } = await searchParams
+  let initialContent: string | undefined
+
+  if (habitId) {
+    const { data: habit } = await supabase
+      .from('habits')
+      .select('prompt_template')
+      .eq('id', habitId)
+      .eq('user_id', user.id)
+      .single()
+
+    initialContent = (habit as { prompt_template: string | null } | null)?.prompt_template ?? undefined
+  }
+
   return (
     <div className="max-w-3xl mx-auto px-4 md:px-8 py-8">
       <TypewriterEditor
         userId={user.id}
         defaultIsAnonymous={profile.default_is_anonymous}
+        initialContent={initialContent}
+        habitId={habitId}
       />
     </div>
   )

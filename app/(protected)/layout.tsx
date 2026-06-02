@@ -2,6 +2,7 @@ import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { SiteNav } from '@/components/nav/site-nav'
+import { FeatureTabs } from '@/components/nav/feature-tabs'
 
 export default async function ProtectedLayout({
   children,
@@ -31,7 +32,8 @@ export default async function ProtectedLayout({
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <SiteNav />
-      <main className="flex-1">{children}</main>
+      <FeatureTabs />
+      <main className="flex-1 pb-20 md:pb-0">{children}</main>
     </div>
   )
 }

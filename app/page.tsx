@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { PenLine, Moon, Lock } from 'lucide-react'
+import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { Footer } from '@/components/footer'
@@ -30,7 +31,9 @@ export default async function Home() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const isLoggedIn = !!user
+  if (user) redirect('/dashboard')
+
+  const isLoggedIn = false
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

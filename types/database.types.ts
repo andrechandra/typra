@@ -71,6 +71,122 @@ export interface Database {
         }
         Relationships: []
       }
+      habits: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          color: string
+          icon: string
+          frequency: string
+          is_archived: boolean
+          sort_order: number
+          created_at: string
+          prompt_template: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          color?: string
+          icon?: string
+          frequency?: string
+          is_archived?: boolean
+          sort_order?: number
+          created_at?: string
+          prompt_template?: string | null
+        }
+        Update: {
+          name?: string
+          color?: string
+          icon?: string
+          frequency?: string
+          is_archived?: boolean
+          sort_order?: number
+          prompt_template?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'habits_user_id_profiles_fk'
+            columns: ['user_id']
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      habit_logs: {
+        Row: {
+          id: string
+          habit_id: string
+          user_id: string
+          logged_on: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          habit_id: string
+          user_id: string
+          logged_on: string
+          created_at?: string
+        }
+        Update: {
+          logged_on?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'habit_logs_habit_id_fk'
+            columns: ['habit_id']
+            referencedRelation: 'habits'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      tasks: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          notes: string | null
+          priority: string
+          label: string | null
+          due_date: string | null
+          completed_at: string | null
+          sort_order: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title: string
+          notes?: string | null
+          priority?: string
+          label?: string | null
+          due_date?: string | null
+          completed_at?: string | null
+          sort_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          title?: string
+          notes?: string | null
+          priority?: string
+          label?: string | null
+          due_date?: string | null
+          completed_at?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'tasks_user_id_profiles_fk'
+            columns: ['user_id']
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          }
+        ]
+      }
     }
     Views: Record<string, never>
     Functions: Record<string, never>

@@ -17,6 +17,17 @@ export const generateMetadata = (): Metadata => ({
   description: siteConfig.description,
   keywords: siteConfig.keywords,
   robots: { index: true, follow: true },
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: siteConfig.title,
+  },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    viewportFit: 'cover',
+  },
   icons: {
     icon: '/logo/tab-icon.png',
     shortcut: '/logo/tab-icon.png',

@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useAutosave } from '@/hooks/use-autosave'
 import { useTypewriterSound, type SoundType } from '@/hooks/use-typewriter-sound'
 import { Button } from '@/components/ui/button'
+import { toggleHabitLog } from '@/actions/habits'
 
 const SaveDialog = dynamic(
   () => import('./save-dialog').then((mod) => mod.SaveDialog),
@@ -17,6 +18,8 @@ const SaveDialog = dynamic(
 interface TypewriterEditorProps {
   userId: string
   defaultIsAnonymous: boolean
+  initialContent?: string
+  habitId?: string
 }
 
 function getDraftKey(userId: string) {
@@ -35,7 +38,7 @@ function getSoundType(key: string): SoundType | null {
   return null
 }
 
-export function TypewriterEditor({ userId, defaultIsAnonymous }: TypewriterEditorProps) {
+export function TypewriterEditor({ userId, defaultIsAnonymous, initialContent, habitId }: TypewriterEditorProps) {
   const [content, setContent] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -43,14 +46,16 @@ export function TypewriterEditor({ userId, defaultIsAnonymous }: TypewriterEdito
   const { soundEnabled, setSoundEnabled, playKeystroke } = useTypewriterSound()
   const supabase = useMemo(() => createClient(), [])
 
-  // Restore draft from localStorage on mount
+  // Restore draft from localStorage on mount; fall back to initialContent if no draft
   useEffect(() => {
     const saved = localStorage.getItem(getDraftKey(userId))
     if (saved) {
       setContent(saved)
+    } else if (initialContent) {
+      setContent(initialContent)
     }
     setDraftRestored(true)
-  }, [userId])
+  }, [userId, initialContent])
 
   // Autosave to localStorage — wrapped in useCallback to stabilize the reference
   const saveDraft = useCallback(
@@ -82,6 +87,12 @@ export function TypewriterEditor({ userId, defaultIsAnonymous }: TypewriterEdito
     localStorage.removeItem(getDraftKey(userId))
     setContent('')
     setDialogOpen(false)
+
+    if (habitId) {
+      const today = new Date().toLocaleDateString('en-CA')
+      await toggleHabitLog(habitId, today, false)
+    }
+
     toastSuccess(
       isPublic
         ? `Entry published${isAnonymous ? ' anonymously' : ''} to forum.`
