@@ -32,7 +32,7 @@ export default async function ProtectedLayout({
     <div className="min-h-screen bg-background flex flex-col">
       <SiteNav />
       <FeatureTabs />
-      <main className="flex-1 pb-24 md:pb-0">{children}</main>
+      <main className="flex-1 pb-32 md:pb-0">{children}</main>
     </div>
   )
 }

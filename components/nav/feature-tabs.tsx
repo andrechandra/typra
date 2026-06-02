@@ -53,7 +53,7 @@ export function FeatureTabs() {
       </div>
 
       {/* Mobile bottom nav — fixed at bottom, only show 5 core tabs */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-background border-t border-border pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
+      <nav className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-background border-t border-border pb-[calc(env(safe-area-inset-bottom)+1.5rem)]">
         <div className="flex items-stretch">
           {tabs.slice(0, 5).map(({ href, label, icon: Icon }) => (
             <Link
