@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getAuthUser } from '@/lib/supabase/get-auth-user'
 import { TypewriterEditor } from '@/components/writing/typewriter-editor-client'
 
 export const metadata: Metadata = {
@@ -12,12 +13,10 @@ interface Props {
 }
 
 export default async function WritePage({ searchParams }: Props) {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
+  const user = await getAuthUser()
   if (!user) redirect('/login')
+
+  const supabase = await createClient()
 
   const { data: profile } = await supabase
     .from('profiles')

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { getAuthUser } from '@/lib/supabase/get-auth-user'
 import { Button } from '@/components/ui/button'
 import { TaskItem } from '@/components/tasks/task-item'
 import type { Task } from '@/types'
@@ -17,12 +18,10 @@ function formatDateHeading(date: string, today: string): string {
 }
 
 export default async function TasksPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
+  const user = await getAuthUser()
   if (!user) return null
+
+  const supabase = await createClient()
 
   const today = new Date().toLocaleDateString('en-CA')
 

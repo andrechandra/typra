@@ -1,16 +1,15 @@
 import { createClient } from '@/lib/supabase/server'
+import { getAuthUser } from '@/lib/supabase/get-auth-user'
 import { DashboardOverview } from '@/components/dashboard/dashboard-overview'
 import type { Habit, Task } from '@/types'
 
 export const metadata = { title: 'Dashboard' }
 
 export default async function DashboardPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
+  const user = await getAuthUser()
   if (!user) return null
+
+  const supabase = await createClient()
 
   const today = new Date().toLocaleDateString('en-CA')
 

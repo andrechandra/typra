@@ -6,7 +6,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from 'sonner'
-import { StreakWidget } from '@/components/streak/streak-widget'
+import { StreakWidgetServer } from '@/components/streak/streak-widget-server'
 
 export const generateMetadata = (): Metadata => ({
   metadataBase: new URL(siteConfig.url),
@@ -65,7 +65,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <StreakWidget />
+          <StreakWidgetServer />
           <Toaster
             position="bottom-right"
             toastOptions={{

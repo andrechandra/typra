@@ -1,5 +1,6 @@
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { getAuthUser } from '@/lib/supabase/get-auth-user'
 import { createClient } from '@/lib/supabase/server'
 import { SiteNav } from '@/components/nav/site-nav'
 import { FeatureTabs } from '@/components/nav/feature-tabs'
@@ -9,10 +10,7 @@ export default async function ProtectedLayout({
 }: {
   children: React.ReactNode
 }) {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getAuthUser()
 
   if (!user) redirect('/login')
 
@@ -20,6 +18,7 @@ export default async function ProtectedLayout({
   const pathname = headersList.get('x-invoke-pathname') ?? ''
 
   if (!pathname.startsWith('/create-username')) {
+    const supabase = await createClient()
     const { data: profile } = await supabase
       .from('profiles')
       .select('id')
@@ -33,7 +32,7 @@ export default async function ProtectedLayout({
     <div className="min-h-screen bg-background flex flex-col">
       <SiteNav />
       <FeatureTabs />
-      <main className="flex-1 pb-20 md:pb-0">{children}</main>
+      <main className="flex-1 pb-24 md:pb-0">{children}</main>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { getAuthUser } from '@/lib/supabase/get-auth-user'
 import { Button } from '@/components/ui/button'
 import { HabitList } from '@/components/habits/habit-list'
 import { computeHabitStreak } from '@/lib/habit-streak'
@@ -9,12 +10,10 @@ import type { Habit, HabitWithLog } from '@/types'
 export const metadata = { title: 'Habits' }
 
 export default async function HabitsPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
+  const user = await getAuthUser()
   if (!user) return null
+
+  const supabase = await createClient()
 
   const today = new Date().toLocaleDateString('en-CA')
 

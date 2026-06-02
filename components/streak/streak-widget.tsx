@@ -12,10 +12,14 @@ import type { User } from '@supabase/supabase-js'
 
 const HIDDEN_ROUTES = ['/login', '/signup', '/verify-email']
 
-export function StreakWidget() {
+interface StreakWidgetProps {
+  initialDates?: string[]
+}
+
+export function StreakWidget({ initialDates }: StreakWidgetProps = {}) {
   const pathname = usePathname()
   const [user, setUser] = useState<User | null | undefined>(undefined)
-  const [dates, setDates] = useState<string[]>([])
+  const [dates, setDates] = useState<string[]>(initialDates ?? [])
 
   const [expanded, setExpanded] = useState(false)
   const [calendarDate, setCalendarDate] = useState(() => {
@@ -45,9 +49,12 @@ export function StreakWidget() {
 
   useEffect(() => {
     if (!user) {
-      setDates([])
+      if (!initialDates) setDates([])
       return
     }
+
+    // Skip client fetch when server pre-fetched the dates
+    if (initialDates) return
 
     const supabase = createClient()
     supabase
@@ -58,7 +65,7 @@ export function StreakWidget() {
       .then(({ data }) => {
         setDates((data ?? []).map((e) => e.created_at))
       })
-  }, [user])
+  }, [user, initialDates])
 
   useEffect(() => {
     isTouchRef.current = window.matchMedia('(hover: none)').matches

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getAuthUser } from '@/lib/supabase/get-auth-user'
 import { MyEntries } from '@/components/entries/my-entries'
 import type { Entry } from '@/types'
 
@@ -9,12 +10,10 @@ export const metadata: Metadata = {
 }
 
 export default async function MyEntriesPage() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
+  const user = await getAuthUser()
   if (!user) redirect('/login')
+
+  const supabase = await createClient()
 
   const { data: entries } = await supabase
     .from('entries')
