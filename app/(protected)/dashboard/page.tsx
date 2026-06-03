@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { getAuthUser } from '@/lib/supabase/get-auth-user'
+import { getTodayString } from '@/lib/get-today'
 import { DashboardOverview } from '@/components/dashboard/dashboard-overview'
 import type { Habit, Task } from '@/types'
 
@@ -11,7 +12,7 @@ export default async function DashboardPage() {
 
   const supabase = await createClient()
 
-  const today = new Date().toLocaleDateString('en-CA')
+  const today = await getTodayString()
 
   const [habitsResult, tasksResult, entriesResult] = await Promise.all([
     supabase

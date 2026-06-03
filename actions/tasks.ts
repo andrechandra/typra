@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { getTodayString } from '@/lib/get-today'
 
 interface TaskPayload {
   title: string
@@ -37,8 +38,7 @@ export async function createTask(
   const parsed = parseTaskForm(formData)
   if ('error' in parsed) return { error: parsed.error }
 
-  // Default due_date to today in the user's local timezone (sent from client)
-  const due_date = (formData.get('due_date') as string | null) || new Date().toLocaleDateString('en-CA')
+  const due_date = (formData.get('due_date') as string | null) || await getTodayString()
 
   const { error } = await supabase.from('tasks').insert({
     user_id: user.id,

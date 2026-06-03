@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Plus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getAuthUser } from '@/lib/supabase/get-auth-user'
+import { getTodayString, getUserTimezone } from '@/lib/get-today'
 import { Button } from '@/components/ui/button'
 import { HabitList } from '@/components/habits/habit-list'
 import { computeHabitStreak } from '@/lib/habit-streak'
@@ -15,7 +16,7 @@ export default async function HabitsPage() {
 
   const supabase = await createClient()
 
-  const today = new Date().toLocaleDateString('en-CA')
+  const [today, timezone] = await Promise.all([getTodayString(), getUserTimezone()])
 
   const { data: habitsData } = await supabase
     .from('habits')
@@ -54,7 +55,7 @@ export default async function HabitsPage() {
     return {
       ...h,
       completedToday: completedSet.has(h.id),
-      currentStreak: computeHabitStreak(logDates),
+      currentStreak: computeHabitStreak(logDates, timezone),
     }
   })
 

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Plus } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getAuthUser } from '@/lib/supabase/get-auth-user'
+import { getTodayString } from '@/lib/get-today'
 import { Button } from '@/components/ui/button'
 import { TaskItem } from '@/components/tasks/task-item'
 import type { Task } from '@/types'
@@ -23,7 +24,7 @@ export default async function TasksPage() {
 
   const supabase = await createClient()
 
-  const today = new Date().toLocaleDateString('en-CA')
+  const today = await getTodayString()
 
   const { data: tasksData } = await supabase
     .from('tasks')

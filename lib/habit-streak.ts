@@ -1,9 +1,10 @@
-export function computeHabitStreak(logDates: string[]): number {
+export function computeHabitStreak(logDates: string[], timezone = 'UTC'): number {
   if (logDates.length === 0) return 0
 
   const sorted = [...logDates].sort((a, b) => (a > b ? -1 : 1))
-  const today = new Date().toLocaleDateString('en-CA')
-  const yesterday = new Date(Date.now() - 86400000).toLocaleDateString('en-CA')
+  const opts = { timeZone: timezone }
+  const today = new Date().toLocaleDateString('en-CA', opts)
+  const yesterday = new Date(Date.now() - 86400000).toLocaleDateString('en-CA', opts)
 
   const mostRecent = sorted[0]
   if (mostRecent !== today && mostRecent !== yesterday) return 0

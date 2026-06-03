@@ -1,9 +1,10 @@
+import { getTodayString } from '@/lib/get-today'
 import { TaskForm } from '@/components/tasks/task-form'
 
 export const metadata = { title: 'New Task' }
 
-export default function NewTaskPage() {
-  const today = new Date().toLocaleDateString('en-CA')
+export default async function NewTaskPage() {
+  const today = await getTodayString()
 
   return (
     <div className="max-w-xl mx-auto px-4 md:px-8 py-8 space-y-6">

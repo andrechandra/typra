@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { getAuthUser } from '@/lib/supabase/get-auth-user'
+import { getTodayString } from '@/lib/get-today'
 import { TaskForm } from '@/components/tasks/task-form'
 import type { Task } from '@/types'
 
@@ -11,13 +13,10 @@ interface Props {
 
 export default async function EditTaskPage({ params }: Props) {
   const { id } = await params
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
+  const user = await getAuthUser()
   if (!user) return null
 
+  const supabase = await createClient()
   const { data: taskData } = await supabase
     .from('tasks')
     .select('*')
@@ -28,7 +27,7 @@ export default async function EditTaskPage({ params }: Props) {
   const task = taskData as Task | null
   if (!task) notFound()
 
-  const today = new Date().toLocaleDateString('en-CA')
+  const today = await getTodayString()
 
   return (
     <div className="max-w-xl mx-auto px-4 md:px-8 py-8 space-y-6">

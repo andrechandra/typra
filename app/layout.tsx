@@ -7,6 +7,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from 'sonner'
 import { StreakWidgetServer } from '@/components/streak/streak-widget-server'
+import { TimezoneSync } from '@/components/timezone-sync'
 
 export const generateMetadata = (): Metadata => ({
   metadataBase: new URL(siteConfig.url),
@@ -64,6 +65,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <TimezoneSync />
           {children}
           <StreakWidgetServer />
           <Toaster
